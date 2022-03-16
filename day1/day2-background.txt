@@ -1,0 +1,4 @@
+一、unittest夹具
+    setUp/tearDowm 在每个用例的前后执行
+    setUpClass/tearDownClass 在每个类的前后执行
+    setUpModule/setDownModule 在每个模块的前后执行

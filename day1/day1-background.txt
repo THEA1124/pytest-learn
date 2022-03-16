@@ -1,0 +1,155 @@
+一 主流的自动化测试工具
+    工具（成品）：UFT、QTP、selenium、Appium
+    框架（半成品）：
+        基于java语言的：TeatNG、Junit
+        基于python的：Unitest（入门级）、Pytest（使用更多）
+        RobotFramework
+        接口框架：Httpprunner
+
+二、单元测试框架Unittest简介（用例管理框架）
+    单元测试：在软件开发过程中，对程序的最小单元（函数、方法）进行测试的过程
+
+    Unittest不仅可以用于单元测试，还可以用于自动化测试用例的开发和执行。
+    组织执行自动化测试用例，并且提供一些丰富断言的方法，判断用例是否通过，最终能够生产测试报告
+
+三、基于Python的自动化测试框架
+
+    Unittest：更简单，更容易上手
+    Pytest：市场份额更多，学习成本更高
+
+    两种框架的选择：
+    一般情况下，能用pytest尽量用pytest（功能更多），如果团队的编码能力不允许的情况下可以选择Unittest
+    web自动化选择unittest，接口自动化选择pytest
+
+    两者的区别：
+        1.默认测试用例的规则差异：
+            Unittest：（耦合）
+            1.新建一个类，必须继承框架里的一个类（unittest.testcase）
+            2.导入unittest模块，Alt+enter
+            3.测试用例必须用test_开头
+
+            pytest：（非耦合）
+            1.测试文件必须以test_开头或_test结尾
+            2.测试类名必须Test开头
+            3.测试用例必须以test结尾
+
+            所有的开发，都遵循非耦合的方式，spring，前后端分离的架构，开发有非耦合的趋势
+
+        2.夹具的差异
+            unittest：
+            1.setUp/tearDown在用例的前后执行
+            2.setUpClass/tearDownClass 在每个类前后执行
+            3.setUpModule/setDownModule 在每个模块的前后执行
+
+            pytest：
+            1.setup/teardown在用例的前后执行
+            2.setup_class/teardown_class 在每个类前后执行
+            3.setup_module/setdown_module 在每个模块的前后执行
+
+        3.断言的差异
+            unittest:
+            self.assertEqual()
+
+            pytest：python原生的assert
+
+        4.失败用例重跑差异
+            unittest:不支持
+            pytest：支持
+
+        5.参数化差异
+            unittest:ddt
+            pytest：@pytest.mark.parametrize
+
+四、单元测试框架的作用
+    1.找到测试用例，根据他们默认的测试用例规则（原理、底层）
+    2.执行找到测试用例
+    3.判断测试用例的结果
+    4.根据结果生产测试报表
+
+五、Unittest重要组件
+    1.TestCase测试用例
+    2.TestSuite测试套件：整理测试用例，形成一个集合
+    3.TestFixtrue测试固件
+    4.TestLoader测试加载器：加载测试用例套件或测试用例
+    5.TestRunner测试运行器：运行测试用例
+
+六、Unittest如何运行测试用例
+
+    unittest运行方式有两种：
+        1.命令行的运行方式（默认的执行方式）:
+            执行整个文件：python -m unittest test_api.py
+            执行文件里的一个方法：python -m unittest test_api.TestApi.test_mashang2
+            python -m:是以命令行的方式运行测试用例
+
+            python -m unittest -v test_api.py
+            unittest -v：以啰嗦的方式，详细的展示测试结果
+
+            python -m unittest test_api.py -k *_mashang2
+            -k：通过通配符匹配的方式去查找测试用例
+
+        2.main方式运行
+            if __name__=='__main__':
+                print('___________')
+                unittest.main()
+七、unittest的运行结果
+    .代表成功。如果加了-v，那么.会编程OK
+    F代表用例执行失败
+    E代表用例出错了
+    S代表用例被跳过
+
+八、unittest测试用例的执行顺序
+    ord():python的内置函数，返回字符串的码ASCII码。
+    根据ASCII码的大小执行测试用例
+
+九、多种unittest的加载方式和运行测试用例的方式
+    1.加载其中的用例
+        方法一
+        if __name__=='__main__':
+        #创建一个测试套件
+        suite = unittest.TestSuite()
+        #把测试用例加载到测试套件里，可以加载多个测试用例
+        suite.addTest(TestApi('test_daa'))
+        #执行用例的时候需要指定套件
+        unittest.main(defaultTest='suite')
+
+        方法二
+        if __name__=='__main__':
+        #创建一个测试套件
+        suite = unittest.TestSuite()
+        #把测试用例加载到测试套件里，可以加载多个测试用例
+        testcase = TestApi('test_daa')
+        suite.addTest(testcase)
+        #执行用例的时候需要指定套件
+        unittest.main(defaultTest='suite')
+    2.加载文件中的所有用例
+        if __name__=='__main__':
+        suite=unittest.defaultTestLoader.discover("./testcase/temp",pattern='test*.py')
+        unittest.main(defaultTest='suite')
+
+十、为什么我们使用unittest.main()就可以执行所有用例
+    五大组件如何工作，他们的原理
+
+    在当前文件执行main，系统会自动执行main.py里的init函数
+    （1）测试加载器已经初始化
+    （2）通过测试加载器加载测试用例，保存到self.test
+    （3）创建文本测试运行器
+    （4）执行已经加载好的测试用例，把结果放到self.result
+
+    类（）代表什么意思：实例化一个对象，自动调用init方法；
+    main.py内各字段代表的意义（ctrl+左键可以进入）
+        module:表示测试用例所在的路径
+        __main__：代表当前模块
+        defaultTest:表示默认的待测试的测试用例或测试套件的名称
+        argv:接收外部传递给程序的参数
+        testRunner：测试运行器
+        testLoader：测试加载器
+            测试加载器已经初始化了
+        exit:是否在测试用例结束之后退出程序
+        verbosity：显示详细信息的程度
+            <0 只显示用例总数及全局执行结果
+            1 默认值，显示用例总数以及全局执行结果外，还显示一个标记：F、E、S
+            >=2 显示用例总数以及全局执行结果外，显示详细结果
+        failfast：是否在测试用例执行失败之后中止测试
+        buffer：缓存
+        warning：警告
+
